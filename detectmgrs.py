@@ -1,14 +1,15 @@
 import re
 
-def regexCheck(regex, item):
-	expr = re.compile(regex)
-	m = expr.match(item)
-	return m
 
-item = '11SNV377214'
-# item = 'test 11SNV377214 test'
+def getMgrsStrings(text):
+	mgrsRegEx = r'(\d{1,2}\s*[^ABIOYZabioyz]\s*[A-Za-z]{2}\s*(\d\s*){2,})'
+	mgrsIter = re.compile(mgrsRegEx).finditer(text)
+	return [''.join(i.group(0).split()) for i in mgrsIter]
 
-mgrsRegEx = "\d{1,2}[^ABIOYZabioyz][A-Za-z]{2}([0-9][0-9])+"
-# result = re.compile(mgrsRegEx).match(item)
-result = re.compile(mgrsRegEx).findall(item)
-print(result)
+
+def test_getMgrsStrings():
+	text = '11SNV377214'
+	assert getMgrsStrings(text) == ['11SNV377214']
+
+	text = 'test 11S     NV377214test06  D  FG  123      123test 11SNV377215'
+	assert getMgrsStrings(text) == ['11SNV377214', '06DFG123123', '11SNV377215']
